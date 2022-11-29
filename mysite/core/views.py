@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from .models import Item
+from .forms import ItemForm
 
 @login_required
 def home(request):
@@ -29,7 +31,30 @@ def signup(request):
 
 @login_required
 def secret_page(request):
-    return render(request, 'secret_page.html')
+    Items = Item.objects.all()
+    return render(request, 'secret_page.html', {
+        'items' : Items
+    })
+
+@login_required
+def edit(request):
+    if(request.method=="POST"):
+        return render(request,'edit.html')
+    else:
+        form = ItemForm()
+        return render(request, 'edit.html', {
+        'form': form})
+        
+
+def item(request):
+    if(request.method=="POST"):
+        print('hit')
+        form = ItemForm(request.POST)
+        if form.is_valid():
+            form.save()
+        return redirect('admin')
+    else:
+        return render('admin')
 
 
 class SecretPage(LoginRequiredMixin, TemplateView):
