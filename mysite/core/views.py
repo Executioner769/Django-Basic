@@ -6,6 +6,7 @@ from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
+@login_required
 def home(request):
     count = User.objects.count()
     return render(request, 'home.html', {
